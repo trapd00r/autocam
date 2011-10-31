@@ -1,0 +1,122 @@
+#!/usr/bin/perl
+
+use vars qw($VERSION);
+$VERSION='0.100';
+
+use strict;
+use warnings FATAL => 'all';
+
+use Pod::Usage;
+use Getopt::Long;
+
+my $opt = {
+  x      => 2592,
+  y      => 1968,
+  target => "$ENV{HOME}/autocam",
+  max    => 100,
+  delay  => 3,
+  camera => 0,
+};
+
+GetOptions(
+  'x|x-res:i'    => \$opt->{x},
+  'y|y-res:i'    => \$opt->{y},
+  't|target:s'   => \$opt->{target},
+  'd|delay:i'    => \$opt->{delay},
+  'm|max:i'      => \$opt->{max},
+  'c|camera:i'   => \$opt->{camera},
+
+  'h|help'       => sub { pod2usage(verbose => 1); exit },
+  'm|man'        => sub { pod2usage(verbose => 3); exit },
+  'v|version'    => sub { print "$0 $VERSION\n"; exit },
+);
+
+
+if(! -d $opt->{target}) {
+  mkdir $opt->{target};
+}
+
+my $gst = "/usr/bin/gst-launch v4l2camsrc device=/dev/video$opt->{camera}"
+  . " num-buffers=1 ! ffmpegcolorspace !"
+  . " video/x-raw-yuv,width=$opt->{x},height=$opt->{y}"
+  . " ! jpegenc ! filesink location=$opt->{target}/";
+
+
+printf("Autocam started - will take %d pictures at %dx%d\n",
+  $opt->{max}, $opt->{x}, $opt->{y},
+);
+
+
+my $num = 0;
+
+while($num < $opt->{max}) {
+  $num = sprintf("%05d", $num);
+
+  system( $gst . time() . "-$num.jpg" ) == 0
+    or die "Sure this is on the n900?\n";
+
+  $num++;
+  printf("saved %d of %d", $num, $opt->{max});
+  if($num < $opt->{max}) {
+    print " - \e[34;1msleeping\e[m $opt->{delay} sec.\n";
+    sleep $opt->{delay};
+  }
+}
+
+
+__END__
+
+=pod
+
+=head1 NAME
+
+autocam - take photos using the front/back camera on the n900
+
+=head1 SYNOPSIS
+
+  autocam [OPTIONS...]
+
+=head1 DESCRIPTION
+
+Autocam can take photos using either the camera on the front or on the back of
+the Nokia n900 in a given interval.
+
+=head1 OPTIONS
+
+    -x,   --x-res  horizontal resolution
+    -y,   --y-res  vertical resolution
+    -t,   --target where to save the pictures
+    -d,   --delay  take a photo each n seconds
+    -c,   --camera camera to use
+
+=head1 PREREQUISITES
+
+A Nokia n900
+
+gstreamer
+
+=head1 REPORTING BUGS
+
+Report bugs and/or feature requests on rt.cpan.org, the L<repository issue tracker|https://github.com/trapd00r/autocam>
+or directly to L<m@japh.se>
+
+=head1 AUTHOR
+
+  Magnus Woldrich
+  CPAN ID: WOLDRICH
+  m@japh.se
+  http://japh.se
+
+=head1 CONTRIBUTORS
+
+None required yet.
+
+=head1 COPYRIGHT
+
+Copyright 2011 B<THIS APPLICATION>s L</AUTHOR> and L</CONTRIBUTORS> as listed above.
+
+=head1 LICENSE
+
+This application is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+=cut

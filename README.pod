@@ -1,0 +1,54 @@
+=pod
+
+=head1 NAME
+
+autocam - take photos using the front/back camera on the n900
+
+=head1 SYNOPSIS
+
+  autocam [OPTIONS...]
+
+=head1 DESCRIPTION
+
+Autocam can take photos using either the camera on the front or on the back of
+the Nokia n900 in a given interval.
+
+=head1 OPTIONS
+
+    -x,   --x-res  horizontal resolution
+    -y,   --y-res  vertical resolution
+    -t,   --target where to save the pictures
+    -d,   --delay  take a photo each n seconds
+    -c,   --camera camera to use
+
+=head1 PREREQUISITES
+
+A Nokia n900
+
+gstreamer
+
+=head1 REPORTING BUGS
+
+Report bugs and/or feature requests on rt.cpan.org, the L<repository issue tracker|https://github.com/trapd00r/autocam>
+or directly to L<m@japh.se>
+
+=head1 AUTHOR
+
+  Magnus Woldrich
+  CPAN ID: WOLDRICH
+  m@japh.se
+  http://japh.se
+
+=head1 CONTRIBUTORS
+
+None required yet.
+
+=head1 COPYRIGHT
+
+Copyright 2011 B<THIS APPLICATION>s L</AUTHOR> and L</CONTRIBUTORS> as listed above.
+
+=head1 LICENSE
+
+This application is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+=cut
